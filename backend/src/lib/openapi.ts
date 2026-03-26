@@ -1,0 +1,42 @@
+export const buildOpenApiSpec = (appUrl: string) => ({
+  openapi: "3.1.0",
+  info: {
+    title: "Nera Backend API",
+    version: "0.1.0",
+    description: "Checkout-first financial ops API for freelancers using Hono on Cloudflare Workers.",
+  },
+  servers: [{ url: appUrl }],
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+    },
+  },
+  paths: {
+    "/auth/register": { post: { summary: "Register a freelancer workspace" } },
+    "/auth/login": { post: { summary: "Login and mint access/refresh tokens" } },
+    "/auth/refresh": { post: { summary: "Rotate refresh token and mint new session tokens" } },
+    "/auth/me": { get: { summary: "Get current authenticated user and workspace" } },
+    "/me/profile": { patch: { summary: "Update workspace profile fields" } },
+    "/me/settlement-preferences": { patch: { summary: "Update payout mode and auto-settlement settings" } },
+    "/me/kyc/documents": { post: { summary: "Upload KYC evidence and move profile to review" } },
+    "/me/kyc": { get: { summary: "Read KYC profile and uploaded documents" } },
+    "/me/payout-accounts": { post: { summary: "Create a payout destination" }, get: { summary: "List payout accounts" } },
+    "/customers": { post: { summary: "Create a customer" }, get: { summary: "List customers" } },
+    "/invoices": { post: { summary: "Create an invoice" }, get: { summary: "List invoices" } },
+    "/invoices/{invoiceId}": { get: { summary: "Get one invoice" } },
+    "/invoices/{invoiceId}/checkout-session": { post: { summary: "Create a hosted checkout session" } },
+    "/public/pay/{token}": { get: { summary: "Read invoice-safe public payment data" } },
+    "/capabilities/collection": { get: { summary: "Read supported collection and settlement corridors" } },
+    "/balances": { get: { summary: "List balances by currency" } },
+    "/withdrawals": { post: { summary: "Request a withdrawal" } },
+    "/withdrawals/{withdrawalId}": { get: { summary: "Read withdrawal status" } },
+    "/reports/statements/{yearMonth}": { get: { summary: "Download monthly statement PDF" } },
+    "/reports/transactions.csv": { get: { summary: "Download monthly CSV export" } },
+    "/webhooks/interswitch": { post: { summary: "Receive Interswitch webhooks" } },
+    "/webhooks/flutterwave": { post: { summary: "Receive Flutterwave webhooks" } },
+  },
+});

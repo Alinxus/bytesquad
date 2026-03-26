@@ -1,0 +1,47 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nera-backend",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-03-25",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "vars": {
+    "APP_URL": "https://nera-backend.olajidealameen4.workers.dev",
+    "ACCESS_TOKEN_TTL_MINUTES": "15",
+    "REFRESH_TOKEN_TTL_DAYS": "30",
+    "PROVIDER_MODE": "live",
+    "DEFAULT_SETTLEMENT_COUNTRY": "NG",
+    "DEFAULT_SETTLEMENT_CURRENCY": "NGN",
+    "RATE_LIMIT_WINDOW_SECONDS": "60",
+    "RATE_LIMIT_MAX_REQUESTS": "60",
+    "CORS_ALLOW_ORIGINS": "http://localhost:3000,http://127.0.0.1:3000",
+    "PROVIDER_HTTP_TIMEOUT_MS": "15000",
+    "LOG_LEVEL": "info"
+  },
+  "queues": {
+    "producers": [
+      {
+        "queue": "nera-async-jobs",
+        "binding": "ASYNC_JOBS"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "nera-async-jobs",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5
+      }
+    ]
+  },
+  "r2_buckets": [
+    {
+      "binding": "DOCUMENTS_BUCKET",
+      "bucket_name": "nera-documents"
+    },
+    {
+      "binding": "REPORTS_BUCKET",
+      "bucket_name": "nera-reports"
+    }
+  ]
+}
