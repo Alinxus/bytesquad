@@ -23,7 +23,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { NCowrieMark } from '@/components/ui/NCowrieMark'
 
 const navItems = [
-  { label: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Invoices', href: '/invoices', icon: FileText },
   { label: 'Customers', href: '/customers', icon: Users },
   { label: 'Withdrawals', href: '/withdrawals', icon: ArrowUpRight },
@@ -43,7 +43,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { user, workspace, logout, isLoggingOut } = useAuth()
 
   const isActive = (href: string) => {
-    if (href === '/') return pathname === '/'
+    if (href === '/dashboard') return pathname === '/dashboard'
     return pathname.startsWith(href)
   }
 
@@ -71,7 +71,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       >
         {}
         <div className="flex items-center justify-between px-6 py-8 shrink-0">
-          <Link href="/" className="flex items-center gap-2.5 group" onClick={onClose}>
+          <Link href="/dashboard" className="flex items-center gap-2.5 group" onClick={onClose}>
             <span className="text-xl font-display font-bold text-primary tracking-tight">nera</span>
           </Link>
           <button

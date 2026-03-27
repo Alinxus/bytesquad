@@ -1,68 +1,76 @@
-'use client'
+"use client";
 
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/store/auth'
-import { authApi } from '@/lib/api'
-import type { LoginRequest, RegisterRequest } from '@/types'
-import { useToast } from '@/hooks/use-toast'
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/auth";
+import { authApi } from "@/lib/api";
+import type { LoginRequest, RegisterRequest } from "@/types";
+import { useToast } from "@/hooks/use-toast";
 
 export function useAuth() {
-  const router = useRouter()
-  const { toast } = useToast()
-  const { user, workspace, isAuthenticated, setAuth, clearAuth, updateWorkspace, updateUser } = useAuthStore()
+  const router = useRouter();
+  const { toast } = useToast();
+  const {
+    user,
+    workspace,
+    isAuthenticated,
+    setAuth,
+    clearAuth,
+    updateWorkspace,
+    updateUser,
+  } = useAuthStore();
 
   const loginMutation = useMutation({
     mutationFn: (data: LoginRequest) => authApi.login(data),
     onSuccess: (data) => {
-      setAuth(data)
+      setAuth(data);
       toast({
-        title: 'Welcome back!',
+        title: "Welcome back!",
         description: `Signed in as ${data.user.email}`,
-      })
-      router.push('/')
+      });
+      router.push("/dashboard");
     },
     onError: (error: unknown) => {
       const message =
-        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        'Invalid email or password'
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Invalid email or password";
       toast({
-        title: 'Login failed',
+        title: "Login failed",
         description: message,
-        variant: 'destructive',
-      })
+        variant: "destructive",
+      });
     },
-  })
+  });
 
   const registerMutation = useMutation({
     mutationFn: (data: RegisterRequest) => authApi.register(data),
     onSuccess: (data) => {
-      setAuth(data)
+      setAuth(data);
       toast({
-        title: 'Account created!',
+        title: "Account created!",
         description: `Welcome to Nera, ${data.user.fullName}`,
-      })
-      router.push('/')
+      });
+      router.push("/dashboard");
     },
     onError: (error: unknown) => {
       const message =
-        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        'Registration failed. Please try again.'
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Registration failed. Please try again.";
       toast({
-        title: 'Registration failed',
+        title: "Registration failed",
         description: message,
-        variant: 'destructive',
-      })
+        variant: "destructive",
+      });
     },
-  })
+  });
 
   const logoutMutation = useMutation({
     mutationFn: () => authApi.logout(),
     onSettled: () => {
-      clearAuth()
-      router.push('/login')
+      clearAuth();
+      router.push("/login");
     },
-  })
+  });
 
   return {
     user,
@@ -81,5 +89,5 @@ export function useAuth() {
     logout: logoutMutation.mutate,
     isLoggingOut: logoutMutation.isPending,
     clearAuth,
-  }
+  };
 }
