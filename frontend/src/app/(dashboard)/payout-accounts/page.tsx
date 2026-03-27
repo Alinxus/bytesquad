@@ -13,7 +13,7 @@ import { Switch } from '@/components/ui/switch'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Sidebar } from '@/components/layout/sidebar'
 import { usePayoutAccounts, useCreatePayoutAccount, useDeletePayoutAccount } from '@/hooks/use-withdrawals'
-import { maskAccountNumber } from '@/lib/utils'
+import { cn, maskAccountNumber } from '@/lib/utils'
 
 const schema = z.object({
   bankCode: z.string().min(1, 'Bank code is required'),
@@ -124,7 +124,7 @@ export default function PayoutAccountsPage() {
               </p>
               <NButton 
                 onClick={() => setShowDialog(true)}
-                className="rounded-2xl px-10 h-14 shadow-xl shadow-primary/20 group h-14"
+                className="rounded-2xl px-10 h-14 shadow-xl shadow-primary/20 group"
               >
                 <Plus className="w-5 h-5 mr-3 transition-transform group-hover:rotate-90" />
                 Add Bank Account
