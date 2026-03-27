@@ -2,41 +2,35 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Plus, ArrowUpRight, Menu } from 'lucide-react'
+import { Plus, ArrowUpRight, Menu, ArrowRight, Wallet, Clock, History } from 'lucide-react'
 import { useWithdrawals } from '@/hooks/use-withdrawals'
 import { useBalances } from '@/hooks/use-balances'
-import { Button } from '@/components/ui/button'
+import { NButton } from '@/components/ui/NButton'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Sidebar } from '@/components/layout/sidebar'
-import { formatCurrency, formatDate, maskAccountNumber } from '@/lib/utils'
-import { cn } from '@/lib/utils'
+import { formatCurrency, formatDate, cn } from '@/lib/utils'
 import type { WithdrawalStatus } from '@/types'
 
-const statusConfig: Record<WithdrawalStatus, { label: string; className: string; dot: string }> = {
+const statusConfig: Record<WithdrawalStatus, { label: string; className: string }> = {
   PENDING: {
     label: 'Pending',
-    className: 'bg-warning/10 text-warning border border-warning/20',
-    dot: 'bg-warning',
+    className: 'bg-warning/10 text-warning border-warning/20',
   },
   PROCESSING: {
     label: 'Processing',
-    className: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
-    dot: 'bg-blue-400',
+    className: 'bg-primary/10 text-primary border-primary/20',
   },
   COMPLETED: {
     label: 'Completed',
-    className: 'bg-success/10 text-success border border-success/20',
-    dot: 'bg-success',
+    className: 'bg-success/10 text-success border-success/20',
   },
   FAILED: {
     label: 'Failed',
-    className: 'bg-error/10 text-error border border-error/20',
-    dot: 'bg-error',
+    className: 'bg-danger/10 text-danger border-danger/20',
   },
   CANCELLED: {
     label: 'Cancelled',
-    className: 'bg-surface-2 text-text-muted border border-border',
-    dot: 'bg-text-muted',
+    className: 'bg-surface text-ink-hint border-border',
   },
 }
 
@@ -49,130 +43,187 @@ export default function WithdrawalsPage() {
   const ngnBalance = balances?.find((b) => b.currency === 'NGN')
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden font-sans text-ink">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Header */}
-        <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-6 bg-background/80 backdrop-blur-md border-b border-border">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+        {}
+        <header className="sticky top-0 z-30 flex items-center justify-between h-20 px-8 bg-white/80 backdrop-blur-xl border-b border-border shrink-0">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-2 transition-colors"
+              className="lg:hidden p-2 rounded-xl text-ink-hint hover:text-ink hover:bg-surface transition-colors"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <h1 className="text-lg font-semibold text-text-primary">Withdrawals</h1>
+            <h1 className="text-xl font-display font-bold text-ink tracking-tight">Withdrawals</h1>
           </div>
           <Link href="/withdrawals/new">
-            <Button size="sm">
-              <Plus className="w-4 h-4" />
-              Withdraw
-            </Button>
+            <NButton size="sm" className="h-10 px-5 rounded-xl">
+              <Plus className="w-4 h-4 mr-2" />
+              New Withdrawal
+            </NButton>
           </Link>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6 animate-fade-in space-y-6">
-          {/* Balance summary */}
+        <main className="flex-1 overflow-y-auto p-8 lg:p-12 space-y-12 max-w-7xl mx-auto w-full">
+          {}
           {ngnBalance && (
-            <div className="rounded-2xl bg-accent-gradient p-5 relative overflow-hidden">
-              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/5" />
-              <div className="relative">
-                <p className="text-white/70 text-sm mb-1">Available for Withdrawal</p>
-                <p className="text-3xl font-bold text-white">
-                  {formatCurrency(ngnBalance.availableMinor, 'NGN')}
-                </p>
-                <p className="text-white/60 text-xs mt-2">
-                  Pending: {formatCurrency(ngnBalance.pendingMinor, 'NGN')}
-                </p>
+            <div className="rounded-[2.5rem] bg-navy p-10 relative overflow-hidden text-white shadow-2xl shadow-navy/20">
+              <div className="absolute top-1/2 right-0 -translate-y-1/2 w-64 h-64 bg-primary blur-[120px] rounded-full opacity-20 pointer-events-none" />
+
+              <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                      <Wallet className="w-4 h-4 text-primary" />
+                    </div>
+                    <span className="text-[10px] font-bold text-white/80 uppercase tracking-[0.2em]">Available Liquidity</span>
+                  </div>
+                  <h2 className="text-display text-5xl md:text-6xl font-bold tracking-tighter mb-2">
+                    {formatCurrency(ngnBalance.availableMinor, 'NGN')}
+                  </h2>
+                  <div className="flex items-center gap-4 text-white/60 text-xs font-bold uppercase tracking-widest mt-6">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                      Locked: {formatCurrency(ngnBalance.pendingMinor, 'NGN')}
+                    </div>
+                  </div>
+                </div>
+
+                <Link href="/withdrawals/new">
+                  <NButton className="bg-white text-navy hover:bg-white/90 h-16 px-10 rounded-2xl group shadow-xl">
+                    Push to Bank <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </NButton>
+                </Link>
               </div>
             </div>
           )}
 
-          {/* Withdrawals table */}
-          <div className="rounded-xl bg-surface border border-border overflow-hidden">
-            {/* Table header */}
-            <div className="hidden md:grid grid-cols-[1.5fr_1fr_1fr_2fr_1fr] gap-4 px-5 py-3 bg-surface-2/50 border-b border-border">
-              {['Amount', 'Currency', 'Status', 'Payout Account', 'Date'].map((h) => (
-                <div key={h} className="text-xs font-medium text-text-muted uppercase tracking-wider">{h}</div>
-              ))}
+          {}
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <History className="w-4 h-4 text-primary" />
+                <h3 className="text-[11px] font-bold text-ink-muted uppercase tracking-[0.2em]">Withdrawal Records / History</h3>
+              </div>
             </div>
 
-            {isLoading ? (
-              <div className="divide-y divide-border">
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className="flex items-center gap-4 px-5 py-4">
-                    <Skeleton className="h-5 w-28" />
-                    <Skeleton className="h-4 w-12" />
-                    <Skeleton className="h-5 w-20 rounded-full" />
-                    <Skeleton className="h-4 w-36" />
-                    <Skeleton className="h-4 w-20" />
+            <div className="nera-card bg-white/50 backdrop-blur-sm overflow-hidden">
+              {}
+              <div className="hidden lg:grid grid-cols-[2fr_1fr_1.5fr_2fr_1fr_auto] gap-6 px-10 py-5 bg-surface/40 border-b border-border">
+                {['Transaction', 'Currency', 'Status', 'Payout Destination', 'Timestamp', ''].map((h) => (
+                  <div key={h} className="text-[10px] font-bold text-ink-muted uppercase tracking-[0.2em]">
+                    {h}
                   </div>
                 ))}
               </div>
-            ) : withdrawals.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-14 h-14 rounded-2xl bg-surface-2 border border-border flex items-center justify-center mb-4">
-                  <ArrowUpRight className="w-6 h-6 text-text-muted" />
-                </div>
-                <p className="text-sm font-medium text-text-primary mb-1">No withdrawals yet</p>
-                <p className="text-xs text-text-muted mb-4">Request your first withdrawal to your bank account</p>
-                <Link href="/withdrawals/new">
-                  <Button size="sm">
-                    <Plus className="w-4 h-4" />
-                    Request Withdrawal
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              <div className="divide-y divide-border">
-                {withdrawals.map((withdrawal) => {
-                  const config = statusConfig[withdrawal.status as WithdrawalStatus] || statusConfig.PENDING
-                  return (
-                    <div
-                      key={withdrawal.id}
-                      className="flex flex-col md:grid md:grid-cols-[1.5fr_1fr_1fr_2fr_1fr] gap-2 md:gap-4 items-start md:items-center px-5 py-4 hover:bg-surface-2/50 transition-colors"
-                    >
-                      <div>
-                        <p className="text-sm font-semibold text-text-primary">
-                          {formatCurrency(withdrawal.amountMinor, withdrawal.currency)}
-                        </p>
-                        {withdrawal.feeMinor > 0 && (
-                          <p className="text-xs text-text-muted">
-                            Fee: {formatCurrency(withdrawal.feeMinor, withdrawal.currency)}
-                          </p>
-                        )}
-                      </div>
 
-                      <p className="text-sm text-text-secondary">{withdrawal.currency}</p>
-
-                      <span
-                        className={cn(
-                          'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium w-fit',
-                          config.className
-                        )}
-                      >
-                        <span className={cn('w-1.5 h-1.5 rounded-full', config.dot)} />
-                        {config.label}
-                      </span>
-
-                      <div>
-                        {withdrawal.payoutAccount ? (
-                          <div>
-                            <p className="text-sm text-text-primary">{withdrawal.payoutAccount.bankName}</p>
-                            <p className="text-xs text-text-muted font-mono">
-                              ****{withdrawal.payoutAccount.accountNumberLast4}
-                            </p>
-                          </div>
-                        ) : (
-                          <p className="text-sm text-text-muted">—</p>
-                        )}
-                      </div>
-
-                      <p className="text-sm text-text-secondary">{formatDate(withdrawal.createdAt)}</p>
+              {isLoading ? (
+                <div className="divide-y divide-border">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="px-10 py-6">
+                      <Skeleton className="h-12 w-full rounded-2xl" />
                     </div>
-                  )
-                })}
+                  ))}
+                </div>
+              ) : withdrawals.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-24 text-center">
+                  <div className="w-20 h-20 rounded-[2.5rem] bg-surface flex items-center justify-center mb-6 shadow-sm border border-border">
+                    <ArrowUpRight className="w-10 h-10 text-ink-hint opacity-50" />
+                  </div>
+                  <h3 className="text-xl font-display font-bold text-ink mb-2">Empty History</h3>
+                  <p className="text-ink-muted text-sm max-w-[320px] mb-8 leading-relaxed">
+                    You haven't initiated any professional payouts yet. Get paid by clients first.
+                  </p>
+                  <Link href="/withdrawals/new">
+                    <NButton size="lg" className="rounded-2xl px-10 h-14">
+                      Start payout flow <ArrowRight className="ml-2 w-4 h-4" />
+                    </NButton>
+                  </Link>
+                </div>
+              ) : (
+                <div className="divide-y divide-border">
+                  {withdrawals.map((withdrawal) => {
+                    const config = statusConfig[withdrawal.status as WithdrawalStatus] || statusConfig.PENDING
+                    return (
+                      <div
+                        key={withdrawal.id}
+                        className="flex flex-col lg:grid lg:grid-cols-[2fr_1fr_1.5fr_2fr_1fr_auto] gap-4 lg:gap-6 items-start lg:items-center px-8 lg:px-10 py-6 hover:bg-surface transition-all group relative border-l-4 border-l-transparent hover:border-l-primary"
+                      >
+                        {}
+                        <div>
+                          <p className="font-display font-bold text-ink group-hover:text-primary transition-colors text-lg tabular-nums">
+                            {formatCurrency(withdrawal.amountMinor, withdrawal.currency)}
+                          </p>
+                          {withdrawal.feeMinor > 0 && (
+                            <p className="text-[10px] font-bold text-ink-muted uppercase tracking-wider mt-1">
+                              Processing Fee: {formatCurrency(withdrawal.feeMinor, withdrawal.currency)}
+                            </p>
+                          )}
+                        </div>
+
+                        {}
+                        <div>
+                          <span className="text-xs font-bold text-ink group-hover:text-primary transition-colors">{withdrawal.currency}</span>
+                        </div>
+
+                        {}
+                        <div>
+                          <span className={cn(
+                            "inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border font-sans leading-none transition-colors",
+                            config.className
+                          )}>
+                            {config.label}
+                          </span>
+                        </div>
+
+                        {}
+                        <div className="min-w-0">
+                          <p className="text-[11px] font-bold text-ink-muted uppercase tracking-wider lg:hidden mb-1">Destination</p>
+                          {withdrawal.payoutAccount ? (
+                            <div>
+                              <p className="text-sm font-bold text-ink truncate leading-tight">
+                                {withdrawal.payoutAccount.bankName}
+                              </p>
+                              <p className="text-[10px] font-bold text-ink-muted uppercase tracking-widest mt-1">
+                                {withdrawal.payoutAccount.accountName} · ****{withdrawal.payoutAccount.accountNumberLast4}
+                              </p>
+                            </div>
+                          ) : (
+                            <p className="text-xs text-ink-hint font-bold italic">— UNDEFINED —</p>
+                          )}
+                        </div>
+
+                        {}
+                        <div>
+                          <p className="text-[11px] font-bold text-ink-hint uppercase tracking-wider lg:hidden mb-1">Timestamp</p>
+                          <p className="text-xs font-bold text-ink">
+                            {formatDate(withdrawal.createdAt)}
+                          </p>
+                          <p className="text-[10px] font-bold text-ink-muted uppercase tracking-widest mt-0.5 tabular-nums">
+                            {new Date(withdrawal.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
+
+                        {}
+                        <div className="hidden lg:flex items-center justify-end">
+                          <div className="w-8 h-8 rounded-lg bg-surface flex items-center justify-center text-ink-hint group-hover:text-primary transition-colors">
+                            <ArrowRight size={14} />
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+
+            {withdrawalsData && (
+              <div className="flex items-center justify-between pt-4">
+                <p className="text-[10px] font-bold text-ink-hint uppercase tracking-[0.2em]">
+                  Total {withdrawals.length} withdrawal records logged
+                </p>
               </div>
             )}
           </div>

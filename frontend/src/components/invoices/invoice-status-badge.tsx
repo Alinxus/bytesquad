@@ -6,31 +6,26 @@ interface InvoiceStatusBadgeProps {
   className?: string
 }
 
-const statusConfig: Record<InvoiceStatus, { label: string; className: string; dotColor: string }> = {
+const statusConfig: Record<InvoiceStatus, { label: string; className: string }> = {
   DRAFT: {
     label: 'Draft',
-    className: 'bg-surface-3 text-text-secondary border border-border',
-    dotColor: 'bg-text-muted',
+    className: 'bg-surface text-ink-muted border-border',
   },
   OPEN: {
     label: 'Open',
-    className: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
-    dotColor: 'bg-blue-400',
+    className: 'bg-primary/10 text-primary border-primary/20',
   },
   PAID: {
     label: 'Paid',
-    className: 'bg-success/10 text-success border border-success/20',
-    dotColor: 'bg-success',
+    className: 'bg-success/10 text-success border-success/20',
   },
   VOID: {
     label: 'Void',
-    className: 'bg-error/10 text-error border border-error/20',
-    dotColor: 'bg-error',
+    className: 'bg-danger/10 text-danger border-danger/20',
   },
   EXPIRED: {
     label: 'Expired',
-    className: 'bg-warning/10 text-warning border border-warning/20',
-    dotColor: 'bg-warning',
+    className: 'bg-warning/10 text-warning border-warning/20',
   },
 }
 
@@ -39,12 +34,11 @@ export function InvoiceStatusBadge({ status, className }: InvoiceStatusBadgeProp
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium',
+        'inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border font-sans leading-none transition-colors',
         config.className,
         className
       )}
     >
-      <span className={cn('w-1.5 h-1.5 rounded-full', config.dotColor)} />
       {config.label}
     </span>
   )

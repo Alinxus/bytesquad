@@ -2,17 +2,17 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { ArrowLeft, Menu } from 'lucide-react'
+import { ArrowLeft, Menu, UserPlus, Mail, Building2, Globe, ArrowRight, Users } from 'lucide-react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { NButton } from '@/components/ui/NButton'
+import { NInput } from '@/components/ui/NInput'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Sidebar } from '@/components/layout/sidebar'
 import { useCreateCustomer } from '@/hooks/use-customers'
+import { cn } from '@/lib/utils'
 
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -37,106 +37,161 @@ const countries = [
 
 export default function NewCustomerPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [countryCode, setCountryCode] = useState('')
   const router = useRouter()
   const createCustomer = useCreateCustomer()
 
   const {
-    register,
     handleSubmit,
-    setValue,
+    control,
     formState: { errors },
-  } = useForm<FormData>({ resolver: zodResolver(schema) })
+  } = useForm<FormData>({ 
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: '',
+      email: '',
+      companyName: '',
+      countryCode: ''
+    }
+  })
 
   const onSubmit = async (data: FormData) => {
-    await createCustomer.mutateAsync({
-      ...data,
-      countryCode: countryCode || undefined,
-    })
+    await createCustomer.mutateAsync(data)
     router.push('/customers')
   }
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden font-sans text-ink">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Header */}
-        <header className="sticky top-0 z-30 flex items-center gap-4 h-16 px-6 bg-background/80 backdrop-blur-md border-b border-border">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-2 transition-colors"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-          <Link href="/customers" className="text-text-muted hover:text-text-primary transition-colors">
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <h1 className="text-lg font-semibold text-text-primary">Add Customer</h1>
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+        {}
+        <header className="sticky top-0 z-30 flex items-center justify-between h-20 px-8 bg-white/80 backdrop-blur-xl border-b border-border shrink-0">
+          <div className="flex items-center gap-4">
+            <button
+               onClick={() => setSidebarOpen(true)}
+               className="lg:hidden p-2 rounded-xl text-ink-hint hover:text-ink hover:bg-surface transition-colors"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => router.back()}
+              className="flex items-center gap-2 text-ink-hint hover:text-ink transition-colors group"
+            >
+              <div className="w-8 h-8 rounded-lg border border-border flex items-center justify-center group-hover:border-ink/20 transition-all">
+                <ArrowLeft className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold uppercase tracking-widest hidden sm:inline">Back</span>
+            </button>
+          </div>
+          <h1 className="text-sm font-bold uppercase tracking-[0.2em] text-ink-hint">
+             Identity Registration
+          </h1>
+          <div className="w-20" /> {}
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6 animate-fade-in">
-          <div className="max-w-lg mx-auto">
-            <div className="rounded-xl bg-surface border border-border p-6">
-              <p className="text-sm text-text-secondary mb-6">
-                Add a customer to send invoices and collect payments.
+        <main className="flex-1 overflow-y-auto p-8 lg:p-12 animate-fade-in relative">
+          <div className="max-w-xl mx-auto relative z-10">
+            <div className="text-center mb-12">
+              <div className="w-20 h-20 rounded-[2.5rem] bg-navy flex items-center justify-center mx-auto mb-6 shadow-xl shadow-navy/20 group hover:scale-110 transition-transform duration-500">
+                <UserPlus className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-display text-4xl mb-3">Add Customer.</h2>
+              <p className="text-ink-muted text-sm max-w-[360px] mx-auto leading-relaxed">
+                Onboard a new global client to your professional network and start generating capital flows.
               </p>
+            </div>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                <div className="space-y-1.5">
-                  <Label htmlFor="name">Full Name *</Label>
-                  <Input
-                    id="name"
-                    placeholder="Jane Smith"
-                    {...register('name')}
-                    className={errors.name ? 'border-error' : ''}
+            <div className="nera-card p-10 bg-white/90 backdrop-blur-xl shadow-2xl shadow-navy/5">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                <div className="grid grid-cols-1 gap-8">
+                  <Controller
+                    name="name"
+                    control={control}
+                    render={({ field }) => (
+                      <NInput
+                        label="Primary Legal Name / Contact"
+                        placeholder="Johnathan Doe"
+                        leftIcon={<Users className="w-4 h-4" />}
+                        error={errors.name?.message}
+                        {...field}
+                      />
+                    )}
                   />
-                  {errors.name && <p className="text-xs text-error">{errors.name.message}</p>}
-                </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="email">Email Address *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="jane@company.com"
-                    {...register('email')}
-                    className={errors.email ? 'border-error' : ''}
+                  <Controller
+                    name="email"
+                    control={control}
+                    render={({ field }) => (
+                      <NInput
+                        label="Electronic Mail Address"
+                        type="email"
+                        placeholder="john@global-corp.io"
+                        leftIcon={<Mail className="w-4 h-4" />}
+                        error={errors.email?.message}
+                        {...field}
+                      />
+                    )}
                   />
-                  {errors.email && <p className="text-xs text-error">{errors.email.message}</p>}
-                </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="companyName">Company Name <span className="text-text-muted">(optional)</span></Label>
-                  <Input
-                    id="companyName"
-                    placeholder="Acme Corp"
-                    {...register('companyName')}
+                  <Controller
+                    name="companyName"
+                    control={control}
+                    render={({ field }) => (
+                      <NInput
+                        label="Corporate Entity / Trading Name"
+                        placeholder="Acme International"
+                        leftIcon={<Building2 className="w-4 h-4" />}
+                        helperText="Required if billing a business entity"
+                        {...field}
+                      />
+                    )}
                   />
+
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-ink-muted uppercase tracking-wider mb-2 block font-display">
+                      Geographic Region
+                    </label>
+                    <Controller
+                      name="countryCode"
+                      control={control}
+                      render={({ field }) => (
+                        <Select 
+                          value={field.value} 
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="h-14 rounded-xl border-border bg-surface relative">
+                             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-hint">
+                                <Globe size={18} />
+                             </div>
+                             <div className="pl-8">
+                                <SelectValue placeholder="Select primary region" />
+                             </div>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {countries.map((c) => (
+                              <SelectItem key={c.value} value={c.value} className="py-3 font-bold">
+                                {c.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                  </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label>Country <span className="text-text-muted">(optional)</span></Label>
-                  <Select value={countryCode} onValueChange={(val) => { setCountryCode(val); setValue('countryCode', val) }}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select country" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {countries.map((c) => (
-                        <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex gap-3 pt-2">
-                  <Button type="submit" loading={createCustomer.isPending} className="flex-1">
-                    Add Customer
-                  </Button>
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                  <NButton 
+                    type="submit" 
+                    loading={createCustomer.isPending} 
+                    className="flex-1 h-16 rounded-2xl shadow-xl shadow-primary/10 group"
+                  >
+                    Register Customer <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </NButton>
                   <Link href="/customers" className="flex-1">
-                    <Button type="button" variant="outline" className="w-full">
-                      Cancel
-                    </Button>
+                    <NButton type="button" variant="outline" className="w-full h-16 rounded-2xl bg-white">
+                      Discard
+                    </NButton>
                   </Link>
                 </div>
               </form>

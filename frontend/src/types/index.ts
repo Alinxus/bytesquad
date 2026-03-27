@@ -1,6 +1,6 @@
-// ============================================================
-// Core Entity Types
-// ============================================================
+
+
+
 
 export interface User {
   id: string
@@ -167,9 +167,9 @@ export interface LedgerTransaction {
   createdAt: string
 }
 
-// ============================================================
-// API Response Types
-// ============================================================
+
+
+
 
 export interface ApiResponse<T> {
   success: boolean
@@ -195,9 +195,9 @@ export interface AuthResponse {
   refreshToken: string
 }
 
-// ============================================================
-// Request Types
-// ============================================================
+
+
+
 
 export interface LoginRequest {
   email: string
@@ -270,9 +270,9 @@ export interface UploadKycDocumentRequest {
   nin?: string
 }
 
-// ============================================================
-// UI / Helper Types
-// ============================================================
+
+
+
 
 export interface NavItem {
   label: string

@@ -82,7 +82,7 @@ export default function KycPage() {
   const [docType, setDocType] = useState('')
   const [uploading, setUploading] = useState(false)
   const [countryCode, setCountryCode] = useState('NG')
-  // Store personal info locally — submitted together with the document
+  
   const [personalInfo, setPersonalInfo] = useState<ProfileFormData | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
@@ -114,7 +114,7 @@ export default function KycPage() {
     },
   })
 
-  // Personal info is saved locally; actual submission happens with the document upload
+  
   const handleSavePersonalInfo = (data: ProfileFormData) => {
     setPersonalInfo({ ...data, countryCode } as ProfileFormData)
     toast({ title: 'Info saved', description: 'Now upload an identity document below.' })
@@ -135,7 +135,7 @@ export default function KycPage() {
         contentBase64: base64,
         fileName: file.name,
         contentType: file.type,
-        // Include personal info if available
+        
         ...(personalInfo && {
           legalName: personalInfo.legalName,
           dateOfBirth: personalInfo.dateOfBirth,
@@ -175,7 +175,11 @@ export default function KycPage() {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Header */}
+        {/*
+        |---------------------------------------------------------------------------------
+        | Header
+        |---------------------------------------------------------------------------------
+        */}
         <header className="sticky top-0 z-30 flex items-center gap-4 h-16 px-6 bg-background/80 backdrop-blur-md border-b border-border">
           <button
             onClick={() => setSidebarOpen(true)}
@@ -187,7 +191,11 @@ export default function KycPage() {
         </header>
 
         <main className="flex-1 overflow-y-auto p-6 animate-fade-in space-y-6">
-          {/* Status Banner */}
+          {/*
+          |---------------------------------------------------------------------------------
+          | Status Banner
+          |---------------------------------------------------------------------------------
+          */}
           <div className={cn('rounded-xl border p-5 flex items-start gap-4', config.className)}>
             <StatusIcon className={cn('w-6 h-6 shrink-0 mt-0.5', config.iconColor)} />
             <div>
@@ -199,7 +207,11 @@ export default function KycPage() {
             </div>
           </div>
 
-          {/* Progress steps */}
+          {/*
+          |---------------------------------------------------------------------------------
+          | Progress steps
+          |---------------------------------------------------------------------------------
+          */}
           <div className="rounded-xl bg-surface border border-border p-5">
             <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-4">Verification Progress</h3>
             <div className="flex items-center gap-0">
@@ -237,7 +249,11 @@ export default function KycPage() {
             </div>
           </div>
 
-          {/* Form */}
+          {/*
+          |---------------------------------------------------------------------------------
+          | Form
+          |---------------------------------------------------------------------------------
+          */}
           {canSubmit && (
             <div className="rounded-xl bg-surface border border-border p-5">
               <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-5">
@@ -329,7 +345,11 @@ export default function KycPage() {
             </div>
           )}
 
-          {/* Document Upload */}
+          {/*
+          |---------------------------------------------------------------------------------
+          | Document Upload
+          |---------------------------------------------------------------------------------
+          */}
           {canSubmit && (
             <div className="rounded-xl bg-surface border border-border p-5">
               <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-4">
@@ -373,7 +393,11 @@ export default function KycPage() {
             </div>
           )}
 
-          {/* Submitted Documents */}
+          {/*
+          |---------------------------------------------------------------------------------
+          | Submitted Documents
+          |---------------------------------------------------------------------------------
+          */}
           {documents && documents.length > 0 && (
             <div className="rounded-xl bg-surface border border-border p-5">
               <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-4">

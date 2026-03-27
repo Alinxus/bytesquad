@@ -4,26 +4,49 @@
 
 @layer base {
   :root {
-    --background: 220 50% 5%;
-    --foreground: 220 30% 95%;
-    --card: 220 40% 8%;
-    --card-foreground: 220 30% 95%;
-    --popover: 220 40% 10%;
-    --popover-foreground: 220 30% 95%;
-    --primary: 217 90% 64%;
+    --background: 0 0% 100%;
+    --foreground: 221 43% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 221 43% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 221 43% 4%;
+    --primary: 225 100% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 40% 10%;
-    --secondary-foreground: 220 30% 95%;
-    --muted: 220 40% 10%;
-    --muted-foreground: 220 20% 55%;
-    --accent: 217 90% 64%;
+    --secondary: 210 40% 98%;
+    --secondary-foreground: 221 43% 4%;
+    --muted: 210 40% 98%;
+    --muted-foreground: 225 15% 50%;
+    --accent: 225 100% 55%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 350 89% 60%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 40% 18%;
-    --input: 220 40% 18%;
-    --ring: 217 90% 64%;
-    --radius: 0.75rem;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 225 100% 55%;
+    --radius: 0.8rem;
+  }
+
+  
+  .dark {
+    --background: 225 68% 10%;
+    --foreground: 225 100% 98%;
+    --card: 225 60% 15%;
+    --card-foreground: 225 100% 98%;
+    --popover: 225 68% 10%;
+    --popover-foreground: 225 100% 98%;
+    --primary: 225 100% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 225 45% 20%;
+    --secondary-foreground: 225 100% 98%;
+    --muted: 225 45% 20%;
+    --muted-foreground: 225 25% 70%;
+    --accent: 225 100% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 225 50% 25%;
+    --input: 225 50% 25%;
+    --ring: 225 100% 55%;
   }
 }
 
@@ -37,87 +60,48 @@
   }
 
   body {
-    background-color: #070B14;
-    color: #F0F4FF;
-    font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
-    @apply antialiased;
+    @apply antialiased bg-background text-foreground;
+    font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
   }
 
-  /* Custom scrollbar */
+  h1, h2, h3, h4, h5, h6, .font-display {
+    font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+    @apply tracking-tight;
+  }
+
+  
   ::-webkit-scrollbar {
     width: 6px;
-    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #0D1220;
+    @apply bg-transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #1E2C44;
-    border-radius: 3px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #243550;
+    @apply bg-border-mid rounded-full;
   }
 }
 
 @layer components {
   .nera-card {
-    @apply bg-surface border border-border rounded-xl;
+    @apply bg-card border border-border shadow-sm rounded-2xl;
   }
 
   .nera-input {
-    @apply bg-surface-2 border border-border rounded-lg px-3 py-2 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent focus:ring-0 transition-all;
+    @apply w-full h-12 px-4 bg-surface border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all font-sans;
   }
 
   .nera-label {
-    @apply text-sm font-medium text-text-secondary mb-1.5 block;
+    @apply text-[11px] font-bold text-ink-muted uppercase tracking-wider mb-2 block;
   }
 
-  .gradient-accent {
-    background: linear-gradient(135deg, #3B74E0 0%, #7AACFF 50%, #4F8EF7 100%);
-  }
-
-  .glass-card {
-    background: rgba(13, 18, 32, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(30, 44, 68, 0.6);
-  }
-
-  .shimmer {
-    background: linear-gradient(
-      90deg,
-      #131929 0%,
-      #1E2C44 50%,
-      #131929 100%
-    );
-    background-size: 400px 100%;
-    animation: shimmer 1.5s ease-in-out infinite;
-  }
-
-  .status-dot {
-    @apply inline-block w-1.5 h-1.5 rounded-full;
-  }
-
-  /* Typography */
   .text-display {
-    @apply text-3xl font-bold tracking-tight text-text-primary;
+    @apply font-display text-4xl font-bold leading-[1.1] tracking-[-0.03em];
   }
 
-  .text-title {
-    @apply text-xl font-semibold text-text-primary;
-  }
-
-  .text-body {
-    @apply text-sm text-text-secondary;
-  }
-
-  /* Page transitions */
-  .page-enter {
-    animation: fade-in 0.3s ease-out;
+  .btn-primary {
+    @apply h-12 px-6 bg-primary text-white font-display font-bold rounded-xl hover:bg-primary-mid transition-all active:scale-[0.97];
   }
 }
 

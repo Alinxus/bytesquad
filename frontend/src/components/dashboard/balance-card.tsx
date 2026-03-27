@@ -20,7 +20,7 @@ export function BalanceCard({ balance, isPrimary }: BalanceCardProps) {
           : 'bg-surface border border-border hover:border-border-light'
       )}
     >
-      {/* Background decoration for primary card */}
+      {}
       {isPrimary && (
         <>
           <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/5" />
@@ -29,7 +29,7 @@ export function BalanceCard({ balance, isPrimary }: BalanceCardProps) {
       )}
 
       <div className="relative">
-        {/* Currency header */}
+        {}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <div
@@ -49,7 +49,7 @@ export function BalanceCard({ balance, isPrimary }: BalanceCardProps) {
           <TrendingUp className={cn('w-4 h-4', isPrimary ? 'text-white/60' : 'text-text-muted')} />
         </div>
 
-        {/* Available balance */}
+        {}
         <div className="mb-3">
           <p className={cn('text-xs mb-1', isPrimary ? 'text-white/70' : 'text-text-muted')}>
             Available Balance
@@ -59,7 +59,7 @@ export function BalanceCard({ balance, isPrimary }: BalanceCardProps) {
           </p>
         </div>
 
-        {/* Pending & Reserved */}
+        {}
         <div className={cn('flex gap-4 pt-3', isPrimary ? 'border-t border-white/20' : 'border-t border-border')}>
           <div>
             <p className={cn('text-xs mb-0.5', isPrimary ? 'text-white/60' : 'text-text-muted')}>Pending</p>

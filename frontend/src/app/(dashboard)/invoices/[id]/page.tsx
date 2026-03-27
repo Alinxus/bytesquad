@@ -85,7 +85,7 @@ export default function InvoiceDetailPage() {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Header */}
+        {}
         <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-6 bg-background/80 backdrop-blur-md border-b border-border">
           <div className="flex items-center gap-4">
             <button
@@ -121,7 +121,7 @@ export default function InvoiceDetailPage() {
         <main className="flex-1 overflow-y-auto p-6 animate-fade-in">
           <div className="max-w-4xl mx-auto space-y-6">
 
-            {/* Invoice header */}
+            {}
             <div className="rounded-xl bg-surface border border-border p-6">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
                 <div>
@@ -142,7 +142,7 @@ export default function InvoiceDetailPage() {
                 </div>
               </div>
 
-              {/* Details grid */}
+              {}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {[
                   { label: 'Customer', value: invoice.customer?.name || '—' },
@@ -160,7 +160,7 @@ export default function InvoiceDetailPage() {
               </div>
             </div>
 
-            {/* Payment Methods */}
+            {}
             {invoice.allowedMethods && invoice.allowedMethods.length > 0 && (
               <div className="rounded-xl bg-surface border border-border p-5">
                 <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-3">
@@ -184,7 +184,7 @@ export default function InvoiceDetailPage() {
               </div>
             )}
 
-            {/* Checkout Section */}
+            {}
             <div className="rounded-xl bg-surface border border-border p-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider">
@@ -204,7 +204,7 @@ export default function InvoiceDetailPage() {
 
               {checkoutSession ? (
                 <div className="space-y-4">
-                  {/* Status */}
+                  {}
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-text-secondary">Session Status</span>
                     <span
@@ -220,7 +220,11 @@ export default function InvoiceDetailPage() {
                     </span>
                   </div>
 
-                  {/* URL */}
+                  {/*
+                  |---------------------------------------------------------------------------------
+                  | URL
+                  |---------------------------------------------------------------------------------
+                  */}
                   <div className="rounded-lg bg-surface-2 border border-border p-4">
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-sm text-accent-light font-mono truncate flex-1">
@@ -244,7 +248,11 @@ export default function InvoiceDetailPage() {
                     </div>
                   </div>
 
-                  {/* Expiry */}
+                  {/*
+                  |---------------------------------------------------------------------------------
+                  | Expiry
+                  |---------------------------------------------------------------------------------
+                  */}
                   {checkoutSession.expiresAt && (
                     <p className="text-xs text-text-muted">
                       Expires: {formatDate(checkoutSession.expiresAt, 'MMM d, yyyy h:mm a')}

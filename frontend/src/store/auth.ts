@@ -10,7 +10,7 @@ interface AuthState {
   refreshToken: string | null
   isAuthenticated: boolean
 
-  // Actions
+  
   setAuth: (data: AuthResponse) => void
   updateWorkspace: (workspace: Workspace) => void
   updateUser: (user: User) => void
@@ -28,7 +28,7 @@ export const useAuthStore = create<AuthState>()(
 
       setAuth: (data: AuthResponse) => {
         const { user, workspace, accessToken, refreshToken } = data
-        // Also store in localStorage for axios interceptors
+        
         setTokens(accessToken, refreshToken)
         set({
           user,
@@ -69,7 +69,7 @@ export const useAuthStore = create<AuthState>()(
         isAuthenticated: state.isAuthenticated,
       }),
       onRehydrateStorage: () => (state) => {
-        // Sync tokens to localStorage for axios interceptors on rehydration
+        
         if (state?.accessToken && state?.refreshToken) {
           setTokens(state.accessToken, state.refreshToken)
         }

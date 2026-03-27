@@ -1,12 +1,18 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Space_Grotesk, DM_Sans } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/lib/providers'
 import { Toaster } from '@/components/ui/toaster'
 
-const inter = Inter({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-space-grotesk',
+  display: 'swap',
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-dm-sans',
   display: 'swap',
 })
 
@@ -36,7 +42,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased bg-background text-text-primary`}>
+      <body className={`${spaceGrotesk.variable} ${dmSans.variable} font-sans antialiased bg-background text-text-primary`}>
         <Providers>
           {children}
           <Toaster />

@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ArrowLeft, Menu } from 'lucide-react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { NButton } from '@/components/ui/NButton'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -76,26 +76,26 @@ export default function NewInvoicePage() {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="sticky top-0 z-30 flex items-center gap-4 h-16 px-6 bg-background/80 backdrop-blur-md border-b border-border">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-2 transition-colors"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-          <Link href="/invoices" className="text-text-muted hover:text-text-primary transition-colors">
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <h1 className="text-lg font-semibold text-text-primary">Create Invoice</h1>
+        {/*
+        |---------------------------------------------------------------------------------
+        | Header
+        |---------------------------------------------------------------------------------
+        */}
+        <header className="sticky top-0 z-30 flex items-center justify-between h-20 px-8 bg-white/80 backdrop-blur-xl border-b border-border shrink-0">
+          <h1 className="text-xl font-display font-bold text-ink tracking-tight">Create Invoice</h1>
         </header>
 
         <main className="flex-1 overflow-y-auto p-6 animate-fade-in">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {/* Left: Invoice Details */}
+              {/*
+              |---------------------------------------------------------------------------------
+              | Left: Invoice Details
+              |---------------------------------------------------------------------------------
+              */}
               <div className="lg:col-span-2 space-y-5">
                 <div className="rounded-xl bg-surface border border-border p-5 space-y-5">
-                  <h2 className="text-sm font-semibold text-text-primary uppercase tracking-wider">Invoice Details</h2>
+                  <h2 className="text-[11px] font-bold text-ink-hint uppercase tracking-[0.2em] mb-6">Invoice Details</h2>
 
                   <div className="space-y-1.5">
                     <Label htmlFor="title">Invoice Title *</Label>
@@ -130,9 +130,12 @@ export default function NewInvoicePage() {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              {currencies.map((c) => (
-                                <SelectItem key={c} value={c}>{c}</SelectItem>
-                              ))}
+                              <SelectItem value="USD"><span className="mr-2">🇺🇸</span> USD</SelectItem>
+                              <SelectItem value="GBP"><span className="mr-2">🇬🇧</span> GBP</SelectItem>
+                              <SelectItem value="EUR"><span className="mr-2">🇪🇺</span> EUR</SelectItem>
+                              <SelectItem value="NGN"><span className="mr-2">🇳🇬</span> NGN</SelectItem>
+                              <SelectItem value="GHS"><span className="mr-2">🇬🇭</span> GHS</SelectItem>
+                              <SelectItem value="KES"><span className="mr-2">🇰🇪</span> KES</SelectItem>
                             </SelectContent>
                           </Select>
                         )}
@@ -174,34 +177,45 @@ export default function NewInvoicePage() {
                 </div>
               </div>
 
-              {/* Right: Customer & Settings */}
+              {/*
+              |---------------------------------------------------------------------------------
+              | Right: Customer & Settings
+              |---------------------------------------------------------------------------------
+              */}
               <div className="space-y-5">
-                {/* Customer */}
-                <div className="rounded-xl bg-surface border border-border p-5 space-y-4">
-                  <h2 className="text-sm font-semibold text-text-primary uppercase tracking-wider">Customer</h2>
+                {/*
+                |---------------------------------------------------------------------------------
+                | Customer
+                |---------------------------------------------------------------------------------
+                */}
+                <div className="rounded-xl bg-surface border border-border p-6 space-y-6">
+                  <h2 className="text-[11px] font-bold text-ink-hint uppercase tracking-[0.2em] mb-4">Customer</h2>
 
-                  <div className="space-y-1.5">
-                    <Label>Select Customer *</Label>
+                  <div className="space-y-2">
+                    <Label className="text-ink font-bold">Select Client *</Label>
                     <Controller
                       name="customerId"
                       control={control}
                       render={({ field }) => (
                         <Select value={field.value} onValueChange={field.onChange}>
-                          <SelectTrigger className={errors.customerId ? 'border-error' : ''}>
-                            <SelectValue placeholder="Choose a customer" />
+                          <SelectTrigger className={errors.customerId ? 'border-danger' : ''}>
+                            <SelectValue placeholder="Choose a client" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="rounded-2xl shadow-2xl">
                             {customers.length === 0 ? (
-                              <div className="py-4 text-center text-xs text-text-muted">
-                                No customers yet.{' '}
-                                <Link href="/customers/new" className="text-accent-light hover:underline">
-                                  Add one
+                              <div className="py-8 text-center">
+                                <p className="text-xs text-ink-hint font-bold uppercase tracking-widest mb-3">No customers found</p>
+                                <Link href="/customers/new" className="text-primary hover:underline font-bold text-sm">
+                                  + Create New Customer
                                 </Link>
                               </div>
                             ) : (
                               customers.map((c) => (
                                 <SelectItem key={c.id} value={c.id}>
-                                  {c.name} — {c.email}
+                                  <div className="flex flex-col py-0.5">
+                                    <span className="font-bold text-ink">{c.name}</span>
+                                    <span className="text-[10px] text-ink-hint uppercase tracking-widest">{c.email}</span>
+                                  </div>
                                 </SelectItem>
                               ))
                             )}
@@ -209,41 +223,49 @@ export default function NewInvoicePage() {
                         </Select>
                       )}
                     />
-                    {errors.customerId && <p className="text-xs text-error">{errors.customerId.message}</p>}
+                    {errors.customerId && <p className="text-xs text-danger mt-1 font-bold">{errors.customerId.message}</p>}
                   </div>
 
-                  <Link href="/customers/new" className="text-xs text-accent-light hover:text-accent transition-colors">
-                    + Create new customer
+                  <Link href="/customers/new" className="text-xs text-primary font-bold hover:underline transition-colors block">
+                    + Create new customer record
                   </Link>
                 </div>
 
-                {/* Payment Methods */}
-                <div className="rounded-xl bg-surface border border-border p-5 space-y-3">
-                  <h2 className="text-sm font-semibold text-text-primary uppercase tracking-wider">Payment Methods</h2>
+                {/*
+                |---------------------------------------------------------------------------------
+                | Payment Methods
+                |---------------------------------------------------------------------------------
+                */}
+                <div className="rounded-xl bg-surface border border-border p-6 space-y-4">
+                  <h2 className="text-[11px] font-bold text-ink-hint uppercase tracking-[0.2em] mb-4">Payment Methods</h2>
                   {paymentMethods.map((method) => (
                     <label key={method.value} className="flex items-center gap-3 cursor-pointer group">
                       <input
                         type="checkbox"
                         value={method.value}
                         {...register('allowedMethods')}
-                        className="w-4 h-4 rounded border-border bg-surface-2 accent-accent focus:ring-accent"
+                        className="w-4 h-4 rounded border-border bg-white accent-primary focus:ring-primary/20"
                       />
-                      <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                      <span className="text-sm text-ink-muted group-hover:text-ink transition-colors font-medium">
                         {method.label}
                       </span>
                     </label>
                   ))}
                 </div>
 
-                {/* Submit */}
-                <Button
+                {/*
+                |---------------------------------------------------------------------------------
+                | Submit
+                |---------------------------------------------------------------------------------
+                */}
+                <NButton
                   type="submit"
                   size="lg"
-                  className="w-full"
+                  className="w-full h-16 rounded-2xl shadow-xl shadow-primary/10"
                   loading={createInvoice.isPending}
                 >
-                  Create Invoice
-                </Button>
+                  Create Project Invoice
+                </NButton>
               </div>
             </div>
           </form>

@@ -1,15 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { format } from 'date-fns'
-import { Download, FileText, Table2, Receipt, Menu, AlertCircle } from 'lucide-react'
+import { Download, FileText, Table2, BarChart3, Menu, AlertCircle, Calendar, ArrowRight } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
-import { Button } from '@/components/ui/button'
+import { NButton } from '@/components/ui/NButton'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Sidebar } from '@/components/layout/sidebar'
 import { reportsApi } from '@/lib/api'
-import { formatCurrency } from '@/lib/utils'
+import { formatCurrency, cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 
 const currentYear = new Date().getFullYear()
@@ -74,161 +73,194 @@ export default function ReportsPage() {
   const periodLabel = `${months.find((m) => m.value === selectedMonth)?.label} ${selectedYear}`
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden font-sans text-ink">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Header */}
-        <header className="sticky top-0 z-30 flex items-center gap-4 h-16 px-6 bg-background/80 backdrop-blur-md border-b border-border">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-2 transition-colors"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-          <h1 className="text-lg font-semibold text-text-primary">Reports</h1>
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+        {/*
+        |---------------------------------------------------------------------------------
+        | Header
+        |---------------------------------------------------------------------------------
+        */}
+        <header className="sticky top-0 z-30 flex items-center justify-between h-20 px-8 bg-white/80 backdrop-blur-xl border-b border-border shrink-0">
+          <div className="flex items-center gap-4">
+            <button
+               onClick={() => setSidebarOpen(true)}
+               className="lg:hidden p-2 rounded-xl text-ink-hint hover:text-ink hover:bg-surface transition-colors"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <h1 className="text-xl font-display font-bold text-ink tracking-tight">Financial Intelligence</h1>
+          </div>
+          <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-surface rounded-xl border border-border">
+             <Calendar size={14} className="text-primary" />
+             <span className="text-[10px] font-bold text-ink-hint uppercase tracking-widest">{periodLabel}</span>
+          </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6 animate-fade-in space-y-6">
-          {/* Period Picker */}
-          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-            <div className="flex gap-3">
-              <Select value={String(selectedMonth)} onValueChange={(v) => setSelectedMonth(Number(v))}>
-                <SelectTrigger className="w-36">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {months.map((m) => (
-                    <SelectItem key={m.value} value={String(m.value)}>{m.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        <main className="flex-1 overflow-y-auto p-8 lg:p-12 space-y-12 max-w-7xl mx-auto w-full relative">
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+             <div>
+                <h2 className="text-display text-4xl mb-3 tracking-tight">Archived performance.</h2>
+                <p className="text-ink-muted text-sm max-w-[400px]">
+                   Generate comprehensive audit trails, tax summaries, and electronic records of your global capital movements.
+                </p>
+             </div>
 
-              <Select value={String(selectedYear)} onValueChange={(v) => setSelectedYear(Number(v))}>
-                <SelectTrigger className="w-24">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {years.map((y) => (
-                    <SelectItem key={y} value={String(y)}>{y}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <p className="text-sm text-text-muted">Viewing reports for <span className="text-text-secondary font-medium">{periodLabel}</span></p>
+             {/*
+             |---------------------------------------------------------------------------------
+             | Period Picker
+             |---------------------------------------------------------------------------------
+             */}
+             <div className="flex items-center gap-3 p-2 bg-white rounded-2xl shadow-sm border border-border">
+                <Select value={String(selectedMonth)} onValueChange={(v) => setSelectedMonth(Number(v))}>
+                  <SelectTrigger className="w-36 h-12 rounded-xl border-none bg-surface/50 font-bold focus:ring-0">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {months.map((m) => (
+                      <SelectItem key={m.value} value={String(m.value)} className="font-bold">{m.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select value={String(selectedYear)} onValueChange={(v) => setSelectedYear(Number(v))}>
+                  <SelectTrigger className="w-28 h-12 rounded-xl border-none bg-surface/50 font-bold focus:ring-0">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {years.map((y) => (
+                      <SelectItem key={y} value={String(y)} className="font-bold">{y}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+             </div>
           </div>
 
-          {/* Report Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* PDF Statement */}
-            <div className="rounded-xl bg-surface border border-border p-5">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-accent-light" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-text-primary">Account Statement</p>
-                  <p className="text-xs text-text-muted">PDF format</p>
-                </div>
-              </div>
-              <p className="text-xs text-text-secondary mb-4 leading-relaxed">
-                A complete account statement showing all transactions, balances, and summaries for the selected period.
-              </p>
-              <Button
+          {/*
+          |---------------------------------------------------------------------------------
+          | Report Cards
+          |---------------------------------------------------------------------------------
+          */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+            {/*
+            |---------------------------------------------------------------------------------
+            | PDF Statement
+            |---------------------------------------------------------------------------------
+            */}
+            <div className="nera-card p-10 bg-white group hover:border-primary/30 transition-all duration-500">
+               <div className="w-14 h-14 rounded-2xl bg-surface flex items-center justify-center mb-8 border border-border group-hover:bg-primary/5 group-hover:border-primary/20 transition-all">
+                  <FileText className="w-6 h-6 text-primary" />
+               </div>
+               <h3 className="font-display font-bold text-xl text-ink mb-2">Audit Statement</h3>
+               <p className="text-xs text-ink-hint font-bold uppercase tracking-widest mb-6">PDF DOCUMENT</p>
+               <p className="text-sm text-ink-muted leading-relaxed mb-10">
+                  Comprehensive audit trail of all transactions and ledger movements in high-fidelity PDF format.
+               </p>
+               <NButton
                 variant="outline"
-                size="sm"
-                className="w-full"
+                className="w-full h-14 rounded-xl font-bold uppercase tracking-widest text-[11px] group-hover:bg-primary group-hover:text-white transition-all shadow-sm"
                 onClick={() => handleDownload('statement')}
                 loading={downloadingStatement}
               >
-                <Download className="w-4 h-4" />
+                <Download className="w-4 h-4 mr-2" />
                 Download PDF
-              </Button>
+              </NButton>
             </div>
 
-            {/* CSV Transactions */}
-            <div className="rounded-xl bg-surface border border-border p-5">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center">
-                  <Table2 className="w-5 h-5 text-success" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-text-primary">Transaction Export</p>
-                  <p className="text-xs text-text-muted">CSV format</p>
-                </div>
-              </div>
-              <p className="text-xs text-text-secondary mb-4 leading-relaxed">
-                Export all transactions as a spreadsheet-compatible CSV file for further analysis or accounting purposes.
-              </p>
-              <Button
+            {/*
+            |---------------------------------------------------------------------------------
+            | CSV Transactions
+            |---------------------------------------------------------------------------------
+            */}
+            <div className="nera-card p-10 bg-white group hover:border-success/30 transition-all duration-500">
+               <div className="w-14 h-14 rounded-2xl bg-surface flex items-center justify-center mb-8 border border-border group-hover:bg-success/5 group-hover:border-success/20 transition-all">
+                  <Table2 className="w-6 h-6 text-success" />
+               </div>
+               <h3 className="font-display font-bold text-xl text-ink mb-2">Spreadsheet Raw</h3>
+               <p className="text-xs text-ink-hint font-bold uppercase tracking-widest mb-6">CSV DATASET</p>
+               <p className="text-sm text-ink-muted leading-relaxed mb-10">
+                 Native CSV export compatible with professional accounting software like Xero, Quickbooks, or Excel.
+               </p>
+               <NButton
                 variant="outline"
-                size="sm"
-                className="w-full"
+                className="w-full h-14 rounded-xl font-bold uppercase tracking-widest text-[11px] group-hover:bg-success group-hover:text-white transition-all shadow-sm"
                 onClick={() => handleDownload('csv')}
                 loading={downloadingCsv}
               >
-                <Download className="w-4 h-4" />
-                Download CSV
-              </Button>
+                <Download className="w-4 h-4 mr-2" />
+                Export CSV
+              </NButton>
             </div>
 
-            {/* Tax Summary */}
-            <div className="rounded-xl bg-surface border border-border p-5">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center">
-                  <Receipt className="w-5 h-5 text-warning" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-text-primary">Tax Summary</p>
-                  <p className="text-xs text-text-muted">Income & fees</p>
-                </div>
-              </div>
-
-              {taxLoading ? (
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-4 w-2/3" />
-                </div>
-              ) : taxError ? (
-                <div className="flex items-center gap-2 text-text-muted">
-                  <AlertCircle className="w-4 h-4" />
-                  <p className="text-xs">No data for this period</p>
-                </div>
-              ) : taxSummary ? (
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center py-1.5 border-b border-border">
-                    <span className="text-xs text-text-secondary">Gross Income</span>
-                    <span className="text-sm font-semibold text-text-primary">
-                      {formatCurrency(taxSummary.grossIncome, taxSummary.currency)}
-                    </span>
+            {/*
+            |---------------------------------------------------------------------------------
+            | Tax Summary
+            |---------------------------------------------------------------------------------
+            */}
+            <div className="nera-card p-10 bg-navy text-white shadow-2xl shadow-navy/20 relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[60px] rounded-full -translate-y-1/2 translate-x-1/2" />
+               <div className="relative z-10">
+                  <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-8 border border-white/10">
+                    <BarChart3 className="w-6 h-6 text-primary" />
                   </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-border">
-                    <span className="text-xs text-text-secondary">Total Fees</span>
-                    <span className="text-sm font-medium text-error">
-                      - {formatCurrency(taxSummary.totalFees, taxSummary.currency)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-1.5">
-                    <span className="text-xs font-semibold text-text-primary">Net Income</span>
-                    <span className="text-sm font-bold text-success">
-                      {formatCurrency(taxSummary.netIncome, taxSummary.currency)}
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-xs text-text-muted">No transactions in this period.</p>
-              )}
+                  <h3 className="font-display font-bold text-xl mb-2 tracking-tight">Fiscal Overview</h3>
+                  <p className="text-xs text-white/30 font-bold uppercase tracking-widest mb-8 italic">PRE-ADJUSTMENT SUMMARY</p>
+                  
+                  {taxLoading ? (
+                    <div className="space-y-4">
+                      <Skeleton className="h-10 w-full bg-white/5 rounded-xl" />
+                      <Skeleton className="h-10 w-full bg-white/5 rounded-xl" />
+                    </div>
+                  ) : taxError ? (
+                    <div className="bg-white/5 rounded-2xl p-6 text-center">
+                       <p className="text-xs font-bold text-white/40 uppercase tracking-widest">No spectral data found</p>
+                    </div>
+                  ) : taxSummary ? (
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center py-4 border-b border-white/10">
+                        <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Network Gross</span>
+                        <span className="font-display font-bold text-white tracking-widest tabular-nums">
+                          {formatCurrency(taxSummary.grossIncome, taxSummary.currency)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center py-4 border-b border-white/10">
+                        <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Aggregated Fees</span>
+                        <span className="font-display font-bold text-red-400 tracking-widest tabular-nums">
+                          - {formatCurrency(taxSummary.totalFees, taxSummary.currency)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center pt-6">
+                        <span className="text-[11px] font-bold text-primary uppercase tracking-[0.2em]">Net Liquid</span>
+                        <span className="text-2xl font-display font-bold text-white tracking-tighter tabular-nums">
+                          {formatCurrency(taxSummary.netIncome, taxSummary.currency)}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-white/5 rounded-2xl p-6 text-center">
+                       <p className="text-xs font-bold text-white/40 uppercase tracking-widest">Inert period / Zero activity</p>
+                    </div>
+                  )}
+               </div>
             </div>
           </div>
 
-          {/* Info note */}
-          <div className="rounded-xl bg-surface-2 border border-border p-4 flex items-start gap-3">
-            <AlertCircle className="w-4 h-4 text-text-muted shrink-0 mt-0.5" />
-            <p className="text-xs text-text-muted leading-relaxed">
-              Reports are generated based on your completed transactions and may take a moment to process.
-              For tax purposes, always consult with a qualified accountant. All amounts are shown in your base currency.
-            </p>
+          {/*
+          |---------------------------------------------------------------------------------
+          | Compliance note
+          |---------------------------------------------------------------------------------
+          */}
+          <div className="nera-card p-8 bg-surface/50 border-border relative z-10 flex items-start gap-5">
+             <div className="w-10 h-10 rounded-xl bg-white border border-border flex items-center justify-center shrink-0 shadow-sm">
+                <AlertCircle className="w-5 h-5 text-primary" />
+             </div>
+             <div>
+                <h4 className="text-[11px] font-bold text-ink uppercase tracking-widest mb-1">Fiscal Compliance Advisory</h4>
+                <p className="text-xs text-ink-muted leading-relaxed max-w-3xl">
+                   These reports are derived from your authenticated ledger data. Nera does not provide certified legal tax counsel. For final fiscal submissions, consult with your jurisdiction's professional accounting network.
+                </p>
+             </div>
           </div>
         </main>
       </div>

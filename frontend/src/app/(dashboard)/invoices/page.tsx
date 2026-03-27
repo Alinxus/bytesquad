@@ -2,14 +2,14 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Plus, FileText, Search, ExternalLink, Menu } from 'lucide-react'
+import { Plus, FileText, Search, ExternalLink, Menu, ArrowRight, Filter } from 'lucide-react'
 import { useInvoices } from '@/hooks/use-invoices'
 import { InvoiceStatusBadge } from '@/components/invoices/invoice-status-badge'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { NButton } from '@/components/ui/NButton'
+import { NInput } from '@/components/ui/NInput'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Sidebar } from '@/components/layout/sidebar'
-import { formatCurrency, formatDate } from '@/lib/utils'
+import { formatCurrency, formatDate, cn } from '@/lib/utils'
 import type { InvoiceStatus } from '@/types'
 
 const statusFilters: { label: string; value: string }[] = [
@@ -39,67 +39,68 @@ export default function InvoicesPage() {
     : invoices
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden font-sans">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Header */}
-        <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-6 bg-background/80 backdrop-blur-md border-b border-border">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+        {}
+        <header className="sticky top-0 z-30 flex items-center justify-between h-20 px-8 bg-white/80 backdrop-blur-xl border-b border-border shrink-0">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-2 transition-colors"
+              className="lg:hidden p-2 rounded-xl text-ink-hint hover:text-ink hover:bg-surface transition-colors"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <h1 className="text-lg font-semibold text-text-primary">Invoices</h1>
+            <h1 className="text-xl font-display font-bold text-ink tracking-tight">Invoices</h1>
           </div>
           <Link href="/invoices/new">
-            <Button size="sm">
-              <Plus className="w-4 h-4" />
+            <NButton size="sm" className="h-10 px-5 rounded-xl">
+              <Plus className="w-4 h-4 mr-2" />
               New Invoice
-            </Button>
+            </NButton>
           </Link>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6 animate-fade-in">
-          {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-6">
-            {/* Status tabs */}
-            <div className="flex gap-1 bg-surface-2 rounded-lg p-1 overflow-x-auto no-scrollbar shrink-0">
+        <main className="flex-1 overflow-y-auto p-8 lg:p-12 space-y-8 max-w-7xl mx-auto w-full">
+          {}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            {}
+            <div className="flex items-center gap-1 p-1 bg-surface border border-border rounded-2xl w-fit overflow-x-auto no-scrollbar">
               {statusFilters.map((filter) => (
                 <button
                   key={filter.value}
                   onClick={() => setActiveStatus(filter.value)}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-all duration-200 ${
+                  className={cn(
+                    "px-5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap uppercase tracking-wider",
                     activeStatus === filter.value
-                      ? 'bg-surface-3 text-text-primary shadow-sm'
-                      : 'text-text-muted hover:text-text-secondary'
-                  }`}
+                      ? "bg-primary text-white shadow-md shadow-primary/20 scale-[1.02]"
+                      : "text-ink-hint hover:text-ink hover:bg-white/60"
+                  )}
                 >
                   {filter.label}
                 </button>
               ))}
             </div>
 
-            {/* Search */}
-            <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-              <Input
-                placeholder="Search invoices..."
+            {}
+            <div className="w-full lg:max-w-md">
+              <NInput
+                placeholder="Search by title, #ID or client name..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9"
+                leftIcon={<Search className="w-4 h-4" />}
+                className="h-12 bg-white/50"
               />
             </div>
           </div>
 
-          {/* Table */}
-          <div className="rounded-xl bg-surface border border-border overflow-hidden">
-            {/* Table header */}
-            <div className="hidden md:grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_auto] gap-4 px-5 py-3 bg-surface-2/50 border-b border-border">
-              {['Invoice', 'Customer', 'Amount', 'Status', 'Due Date', ''].map((h) => (
-                <div key={h} className="text-xs font-medium text-text-muted uppercase tracking-wider">
+          {}
+          <div className="nera-card bg-white/50 backdrop-blur-sm overflow-hidden">
+            {}
+            <div className="hidden lg:grid grid-cols-[3fr_2fr_1.5fr_1fr_1.5fr_auto] gap-6 px-10 py-5 bg-surface/40 border-b border-border">
+              {['Invoice Specification', 'Client', 'Amount', 'Status', 'Timeline', ''].map((h) => (
+                <div key={h} className="text-[10px] font-bold text-ink-hint uppercase tracking-[0.2em]">
                   {h}
                 </div>
               ))}
@@ -108,36 +109,29 @@ export default function InvoicesPage() {
             {isLoading ? (
               <div className="divide-y divide-border">
                 {[...Array(6)].map((_, i) => (
-                  <div key={i} className="grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_auto] gap-4 items-center px-5 py-4">
-                    <div>
-                      <Skeleton className="h-4 w-32 mb-1.5" />
-                      <Skeleton className="h-3 w-20" />
-                    </div>
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-4 w-20" />
-                    <Skeleton className="h-5 w-16 rounded-full" />
-                    <Skeleton className="h-4 w-20" />
-                    <Skeleton className="h-8 w-8 rounded-lg" />
+                  <div key={i} className="px-10 py-6">
+                    <Skeleton className="h-12 w-full rounded-2xl" />
                   </div>
                 ))}
               </div>
             ) : filtered.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-14 h-14 rounded-2xl bg-surface-2 border border-border flex items-center justify-center mb-4">
-                  <FileText className="w-6 h-6 text-text-muted" />
+              <div className="flex flex-col items-center justify-center py-24 text-center">
+                <div className="w-20 h-20 rounded-[2.5rem] bg-surface flex items-center justify-center mb-6 shadow-sm border border-border">
+                  <FileText className="w-10 h-10 text-ink-hint opacity-50" />
                 </div>
-                <p className="text-sm font-medium text-text-primary mb-1">
-                  {search ? 'No invoices found' : 'No invoices yet'}
-                </p>
-                <p className="text-xs text-text-muted mb-4">
-                  {search ? 'Try adjusting your search' : 'Create your first invoice to get started'}
+                <h3 className="text-xl font-display font-bold text-ink mb-2">
+                  {search ? 'No matches found' : 'Zero invoices found'}
+                </h3>
+                <p className="text-ink-muted text-sm max-w-[320px] mb-8 leading-relaxed">
+                  {search 
+                    ? `We couldn’t find any invoices matching "${search}". Try refining your keywords.` 
+                    : 'Start your professional journey by creating your first global invoice today.'}
                 </p>
                 {!search && (
                   <Link href="/invoices/new">
-                    <Button size="sm">
-                      <Plus className="w-4 h-4" />
-                      New Invoice
-                    </Button>
+                    <NButton size="lg" className="rounded-2xl px-10 h-14">
+                      Create first invoice <ArrowRight className="ml-2 w-4 h-4" />
+                    </NButton>
                   </Link>
                 )}
               </div>
@@ -147,36 +141,85 @@ export default function InvoicesPage() {
                   <Link
                     key={invoice.id}
                     href={`/invoices/${invoice.id}`}
-                    className="flex flex-col md:grid md:grid-cols-[2fr_1.5fr_1fr_1fr_1fr_auto] gap-2 md:gap-4 items-start md:items-center px-5 py-4 hover:bg-surface-2/50 transition-colors group"
+                    className="flex flex-col lg:grid lg:grid-cols-[3fr_2fr_1.5fr_1fr_1.5fr_auto] gap-4 lg:gap-6 items-start lg:items-center px-8 lg:px-10 py-6 hover:bg-surface transition-all group relative border-l-4 border-l-transparent hover:border-l-primary"
                   >
-                    {/* Invoice info */}
+                    {/*
+                    |---------------------------------------------------------------------------------
+                    | Specification
+                    |---------------------------------------------------------------------------------
+                    */}
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-text-primary truncate group-hover:text-accent-light transition-colors">
+                      <p className="font-display font-bold text-ink group-hover:text-primary transition-colors text-lg truncate">
                         {invoice.title}
                       </p>
-                      <p className="text-xs text-text-muted font-mono">{invoice.invoiceNumber}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] font-bold text-ink-hint uppercase tracking-wider px-2 py-0.5 bg-surface rounded border border-border group-hover:border-primary/20 group-hover:bg-primary/5 transition-colors">
+                          {invoice.invoiceNumber}
+                        </span>
+                      </div>
                     </div>
 
-                    {/* Customer */}
-                    <p className="text-sm text-text-secondary truncate">
-                      {invoice.customer?.name || '—'}
-                    </p>
+                    {/*
+                    |---------------------------------------------------------------------------------
+                    | Client
+                    |---------------------------------------------------------------------------------
+                    */}
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-bold text-ink-hint uppercase tracking-wider lg:hidden mb-1">Client</p>
+                      <p className="text-sm font-bold text-ink truncate">
+                        {invoice.customer?.name || '—'}
+                      </p>
+                      {invoice.customer?.email && (
+                        <p className="text-[11px] font-medium text-ink-hint truncate mt-0.5">{invoice.customer.email}</p>
+                      )}
+                    </div>
 
-                    {/* Amount */}
-                    <p className="text-sm font-semibold text-text-primary">
-                      {formatCurrency(invoice.amountMinor, invoice.currency)}
-                    </p>
+                    {/*
+                    |---------------------------------------------------------------------------------
+                    | Amount
+                    |---------------------------------------------------------------------------------
+                    */}
+                    <div>
+                    <p className="text-[11px] font-bold text-ink-hint uppercase tracking-wider lg:hidden mb-1">Amount</p>
+                      <p className="font-display font-bold text-ink text-lg tabular-nums">
+                        {formatCurrency(invoice.amountMinor, invoice.currency)}
+                      </p>
+                    </div>
 
-                    {/* Status */}
-                    <InvoiceStatusBadge status={invoice.status as InvoiceStatus} />
+                    {/*
+                    |---------------------------------------------------------------------------------
+                    | Status
+                    |---------------------------------------------------------------------------------
+                    */}
+                    <div>
+                      <InvoiceStatusBadge status={invoice.status as InvoiceStatus} />
+                    </div>
 
-                    {/* Due date */}
-                    <p className="text-sm text-text-secondary">
-                      {formatDate(invoice.dueDate)}
-                    </p>
+                    {/*
+                    |---------------------------------------------------------------------------------
+                    | Timeline
+                    |---------------------------------------------------------------------------------
+                    */}
+                    <div>
+                      <p className="text-[11px] font-bold text-ink-hint uppercase tracking-wider lg:hidden mb-1">Due Date</p>
+                      <p className="text-xs font-bold text-ink">
+                        {formatDate(invoice.dueDate)}
+                      </p>
+                      <p className="text-[10px] font-bold text-ink-hint uppercase tracking-widest mt-0.5 italic">
+                        Created {formatDate(invoice.createdAt)}
+                      </p>
+                    </div>
 
-                    {/* Action */}
-                    <ExternalLink className="w-4 h-4 text-text-muted group-hover:text-accent-light transition-colors hidden md:block" />
+                    {/*
+                    |---------------------------------------------------------------------------------
+                    | Action
+                    |---------------------------------------------------------------------------------
+                    */}
+                    <div className="hidden lg:flex items-center justify-end">
+                      <div className="w-10 h-10 rounded-xl bg-white border border-border flex items-center justify-center text-ink-hint group-hover:text-primary group-hover:border-primary/30 transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 shadow-sm">
+                        <ArrowRight size={18} />
+                      </div>
+                    </div>
                   </Link>
                 ))}
               </div>
@@ -184,9 +227,15 @@ export default function InvoicesPage() {
           </div>
 
           {data && (
-            <p className="text-xs text-text-muted mt-3">
-              Showing {filtered.length} of {data.total} invoices
-            </p>
+            <div className="flex items-center justify-between pt-4">
+              <p className="text-[10px] font-bold text-ink-hint uppercase tracking-[0.2em]">
+                Showing {filtered.length} of {data.total} records
+              </p>
+              <div className="flex items-center gap-2">
+                 <NButton variant="outline" size="sm" className="h-8 text-[10px] uppercase font-bold tracking-widest bg-white" disabled>Prev</NButton>
+                 <NButton variant="outline" size="sm" className="h-8 text-[10px] uppercase font-bold tracking-widest bg-white" disabled>Next</NButton>
+              </div>
+            </div>
           )}
         </main>
       </div>

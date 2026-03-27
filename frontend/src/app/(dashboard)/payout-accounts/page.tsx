@@ -5,7 +5,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Plus, CreditCard, Star, Trash2, Menu, CheckCircle2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { NButton } from '@/components/ui/NButton'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -85,21 +85,21 @@ export default function PayoutAccountsPage() {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Header */}
+        {}
         <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-6 bg-background/80 backdrop-blur-md border-b border-border">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-2 transition-colors"
+              className="lg:hidden p-2 rounded-lg text-ink-muted hover:text-ink hover:bg-surface transition-colors"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <h1 className="text-lg font-semibold text-text-primary">Payout Accounts</h1>
+            <h1 className="text-lg font-semibold text-ink">Payout Accounts</h1>
           </div>
-          <Button size="sm" onClick={() => setShowDialog(true)}>
-            <Plus className="w-4 h-4" />
+          <NButton size="sm" onClick={() => setShowDialog(true)} className="h-10 px-6 rounded-xl">
+            <Plus className="w-4 h-4 mr-2" />
             Add Account
-          </Button>
+          </NButton>
         </header>
 
         <main className="flex-1 overflow-y-auto p-6 animate-fade-in">
@@ -107,23 +107,28 @@ export default function PayoutAccountsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {[...Array(3)].map((_, i) => (
                 <div key={i} className="rounded-xl bg-surface border border-border p-5 animate-pulse">
-                  <div className="h-4 bg-surface-2 rounded w-24 mb-3" />
-                  <div className="h-6 bg-surface-2 rounded w-32 mb-2" />
-                  <div className="h-3 bg-surface-2 rounded w-20" />
+                  <div className="h-4 bg-surface rounded w-24 mb-3" />
+                  <div className="h-6 bg-surface rounded w-32 mb-2" />
+                  <div className="h-3 bg-surface rounded w-20" />
                 </div>
               ))}
             </div>
           ) : !accounts || accounts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
-              <div className="w-16 h-16 rounded-2xl bg-surface-2 border border-border flex items-center justify-center mb-4">
-                <CreditCard className="w-7 h-7 text-text-muted" />
+            <div className="flex flex-col items-center justify-center min-h-[500px] text-center p-8 bg-surface/30 rounded-3xl border-2 border-dashed border-border mb-12 animate-fade-in">
+              <div className="w-24 h-24 rounded-[2rem] bg-white border-2 border-border flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform duration-500">
+                <CreditCard className="w-10 h-10 text-primary/40" />
               </div>
-              <p className="text-sm font-medium text-text-primary mb-1">No payout accounts</p>
-              <p className="text-xs text-text-muted mb-4">Add a bank account to start withdrawing your earnings</p>
-              <Button size="sm" onClick={() => setShowDialog(true)}>
-                <Plus className="w-4 h-4" />
+              <h3 className="text-2xl font-display font-bold text-ink mb-3 tracking-tight">No payout endpoints.</h3>
+              <p className="text-sm text-ink-muted mb-10 max-w-[340px] leading-relaxed mx-auto">
+                Connect your business settlement account to begin relaying liquidity from your Nera balances.
+              </p>
+              <NButton 
+                onClick={() => setShowDialog(true)}
+                className="rounded-2xl px-10 h-14 shadow-xl shadow-primary/20 group h-14"
+              >
+                <Plus className="w-5 h-5 mr-3 transition-transform group-hover:rotate-90" />
                 Add Bank Account
-              </Button>
+              </NButton>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -144,37 +149,37 @@ export default function PayoutAccountsPage() {
                       <CreditCard className="w-5 h-5 text-accent-light" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-text-primary truncate">{account.bankName}</p>
-                      <p className="text-xs text-text-muted">{account.currency}</p>
+                      <p className="text-sm font-semibold text-ink truncate">{account.bankName}</p>
+                      <p className="text-xs text-ink-muted">{account.currency}</p>
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
                     <div className="flex justify-between">
-                      <span className="text-xs text-text-muted">Account number</span>
-                      <span className="text-xs font-mono text-text-primary">****{account.accountNumberLast4}</span>
+                      <span className="text-xs text-ink-muted">Account number</span>
+                      <span className="text-xs font-mono text-ink">****{account.accountNumberLast4}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-xs text-text-muted">Account name</span>
-                      <span className="text-xs text-text-primary truncate ml-2 text-right">{account.accountName}</span>
+                      <span className="text-xs text-ink-muted">Account name</span>
+                      <span className="text-xs text-ink truncate ml-2 text-right">{account.accountName}</span>
                     </div>
                   </div>
 
-                  <div className="flex gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {!account.isDefault && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="flex-1 text-xs"
+                  <div className="flex gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    {!account.isDefault ? (
+                      <NButton
+                        variant="ghost"
+                        className="flex-1 text-[10px] font-bold uppercase tracking-widest h-10 border border-border hover:bg-surface text-ink-muted"
                         disabled
                       >
                         Set Default
-                      </Button>
+                      </NButton>
+                    ) : (
+                      <div className="flex-1" />
                     )}
-                    <Button
-                      size="icon-sm"
+                    <NButton
                       variant="ghost"
-                      className="text-text-muted hover:text-error hover:bg-error/10"
+                      className="w-10 h-10 p-0 text-ink-muted hover:text-danger hover:bg-danger/5 border border-transparent hover:border-danger/10 flex items-center justify-center shrink-0"
                       onClick={() => {
                         if (confirm('Remove this bank account?')) {
                           deleteAccount.mutate(account.id)
@@ -182,7 +187,7 @@ export default function PayoutAccountsPage() {
                       }}
                     >
                       <Trash2 className="w-4 h-4" />
-                    </Button>
+                    </NButton>
                   </div>
                 </div>
               ))}
@@ -191,7 +196,7 @@ export default function PayoutAccountsPage() {
         </main>
       </div>
 
-      {/* Add Account Dialog */}
+      {}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -216,12 +221,14 @@ export default function PayoutAccountsPage() {
                       if (bank) setValue('bankName', bank.name)
                     }}
                   >
-                    <SelectTrigger className={errors.bankCode ? 'border-error' : ''}>
-                      <SelectValue placeholder="Select bank" />
+                    <SelectTrigger className={cn("h-14 rounded-2xl", errors.bankCode ? 'border-danger' : 'border-border')}>
+                      <SelectValue placeholder="Select institution" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="rounded-2xl shadow-2xl">
                       {nigeriaBanks.map((bank) => (
-                        <SelectItem key={bank.code} value={bank.code}>{bank.name}</SelectItem>
+                        <SelectItem key={bank.code} value={bank.code} className="py-3">
+                          <span className="font-bold text-ink">{bank.name}</span>
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -256,18 +263,18 @@ export default function PayoutAccountsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <Label>Set as default</Label>
-                <p className="text-xs text-text-muted">Use this account for automatic payouts</p>
+                <p className="text-xs text-ink-muted">Use this account for automatic payouts</p>
               </div>
               <Switch checked={isDefault} onCheckedChange={setIsDefault} />
             </div>
 
-            <div className="flex gap-3 pt-2">
-              <Button type="submit" loading={createAccount.isPending} className="flex-1">
-                Add Account
-              </Button>
-              <Button type="button" variant="outline" onClick={() => setShowDialog(false)} className="flex-1">
+            <div className="flex gap-3 pt-4">
+              <NButton type="submit" loading={createAccount.isPending} className="flex-1 h-14 rounded-2xl shadow-lg">
+                Register Account
+              </NButton>
+              <NButton type="button" variant="ghost" onClick={() => setShowDialog(false)} className="flex-1 h-14 rounded-2xl text-ink-muted">
                 Cancel
-              </Button>
+              </NButton>
             </div>
           </form>
         </DialogContent>
